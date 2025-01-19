@@ -3,14 +3,13 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
 
 class Add_invoice_new extends Notification
 {
     use Queueable;
+
     private $invoice_id;
 
     /**
@@ -34,18 +33,16 @@ class Add_invoice_new extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'id'=> $this->invoice_id,
-            'title'=>'تم اضافة فاتورة جديدة بواسطة :',
-            'user'=> Auth::user()->name,
+            'id' => $this->invoice_id,
+            'title' => 'تم اضافة فاتورة جديدة بواسطة :',
+            'user' => Auth::user()->name,
         ];
     }
     /*
-    على الرغم من أن الحقول id, title, user 
+    على الرغم من أن الحقول id, title, user
     ليست أعمدة فعلية في جدول notifications،
-    إلا أنها تُخزن ضمن عمود واحد في الجدول يسمى data 
+    إلا أنها تُخزن ضمن عمود واحد في الجدول يسمى data
     على شكل JSON.
     */
-
- 
 
 }

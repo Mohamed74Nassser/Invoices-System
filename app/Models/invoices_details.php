@@ -20,5 +20,4 @@ class invoices_details extends Model
         'user',
         'Payment_Date',
     ];
-
 }

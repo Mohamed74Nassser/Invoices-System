@@ -14,6 +14,7 @@ class SectionsController extends Controller
     public function index()
     {
         $all_sections = sections::all();
+
         return view('sections/sections', compact('all_sections'));
     }
 
@@ -43,6 +44,7 @@ class SectionsController extends Controller
             'description' => $validated['description'],
             'Created_by' => Auth::user()->name,
         ]);
+
         return redirect()->back()->with(['Add' => 'تم اضافه القسم بنجاح ']);
     }
 
@@ -69,7 +71,7 @@ class SectionsController extends Controller
     {
         $input = $request->all();
         $validated = $request->validate([
-            'section_name' => 'required|max:255|unique:sections,section_name,' . $input['id'],
+            'section_name' => 'required|max:255|unique:sections,section_name,'.$input['id'],
             'description' => 'required',
         ], [
             'section_name.required' => 'يرجى ادخال اسم القسم',
@@ -81,6 +83,7 @@ class SectionsController extends Controller
             'section_name' => $validated['section_name'],
             'description' => $validated['description'],
         ]);
+
         return redirect()->back()->with(['edit' => 'تم تعديل القسم بنجاح ']);
     }
 
@@ -91,6 +94,7 @@ class SectionsController extends Controller
     {
         $id = $request->id;
         sections::find($id)->delete();
+
         return redirect()->back()->with(['delete' => 'تم حذف القسم بنجاح']);
     }
 }

@@ -68,5 +68,5 @@ class Kernel extends HttpKernel
         'role' => RoleMiddleware::class,
         'permission' => PermissionMiddleware::class,
         'check_status' => \App\Http\Middleware\CheckUserStatus::class,
-        ];
+    ];
 }

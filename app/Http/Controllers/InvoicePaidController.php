@@ -14,7 +14,8 @@ class InvoicePaidController extends Controller
     public function index()
     {
         $all_invoices = invoices::where('status', 'مدفوعة')->get();
-        return view('invoices/invoices_paid',compact('all_invoices'));
+
+        return view('invoices/invoices_paid', compact('all_invoices'));
     }
 
     /**

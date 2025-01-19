@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class products extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'product_name',
         'description',
@@ -17,7 +18,6 @@ class products extends Model
 
     public function section(): BelongsTo
     {
-        return $this->belongsTo(sections::class,'section_id');
+        return $this->belongsTo(sections::class, 'section_id');
     }
-
 }

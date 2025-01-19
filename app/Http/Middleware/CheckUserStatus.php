@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 namespace App\Http\Middleware;
 
 use Closure;
@@ -14,6 +15,7 @@ class CheckUserStatus
             }
             Auth::logout();
         }
+
         return redirect()->back()->with(['message' => 'حسابك معطل، يرجى التواصل مع الإدارة.']);
     }
 }

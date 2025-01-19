@@ -14,5 +14,4 @@ class sections extends Model
         'description',
         'Created_by',
     ];
-
 }

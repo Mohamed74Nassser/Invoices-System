@@ -15,6 +15,7 @@ class ProductsController extends Controller
     {
         $sections = sections::all();
         $products = products::all();
+
         return view('products/products', compact('sections', 'products'));
     }
 
@@ -75,7 +76,7 @@ class ProductsController extends Controller
     {
         $input = $request->all();
         $validated = $request->validate([
-            'product_name' => 'required|max:255|unique:products,product_name,' . $input['id'],
+            'product_name' => 'required|max:255|unique:products,product_name,'.$input['id'],
             'section_id' => 'required',
             'description' => 'required',
         ], [
@@ -90,6 +91,7 @@ class ProductsController extends Controller
             'section_id' => $validated['section_id'],
             'description' => $validated['description'],
         ]);
+
         return redirect()->back()->with(['edit' => 'تم تعديل المنتج بنجاح ']);
     }
 
@@ -100,6 +102,7 @@ class ProductsController extends Controller
     {
         $id = $request->id;
         products::find($id)->delete();
+
         return redirect()->back()->with(['delete' => 'تم حذف المنتج بنجاح']);
     }
 }

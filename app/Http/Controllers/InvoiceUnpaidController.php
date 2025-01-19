@@ -14,7 +14,8 @@ class InvoiceUnpaidController extends Controller
     public function index()
     {
         $all_invoices = invoices::where('status', 'غير مدفوعة')->get();
-        return view('invoices/invoices_unpaid',compact('all_invoices'));
+
+        return view('invoices/invoices_unpaid', compact('all_invoices'));
     }
 
     /**

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use LaravelDaily\LaravelCharts\Classes\LaravelChart;
 
 class HomeController extends Controller
@@ -34,6 +33,6 @@ class HomeController extends Controller
         ];
         $chart1 = new LaravelChart($chart_options);
 
-        return view('dashboard',compact('chart1'));
+        return view('dashboard', compact('chart1'));
     }
 }

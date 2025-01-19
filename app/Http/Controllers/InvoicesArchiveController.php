@@ -14,7 +14,8 @@ class InvoicesArchiveController extends Controller
     public function index()
     {
         $invoices_archive = invoices::onlyTrashed()->get();
-        return view('invoices/invoices_archive',compact('invoices_archive'));
+
+        return view('invoices/invoices_archive', compact('invoices_archive'));
     }
 
     /**
@@ -57,7 +58,8 @@ class InvoicesArchiveController extends Controller
         $invoice_id = $request->invoice_id;
         $invoice = invoices::withTrashed()->find($invoice_id);
         $invoice->restore();
-        return redirect('/invoices')->with(['restore_from_archive' => 'تم استعادة الفاتورة بنجاح ']);    
+
+        return redirect('/invoices')->with(['restore_from_archive' => 'تم استعادة الفاتورة بنجاح ']);
 
     }
 

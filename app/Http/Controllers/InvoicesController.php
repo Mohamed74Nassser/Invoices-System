@@ -1,9 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Exports\InvoicesExport;
-use Maatwebsite\Excel\Facades\Excel;
 
+use App\Exports\InvoicesExport;
 use App\Models\invoice_attachments;
 use App\Models\invoices;
 use App\Models\invoices_details;
@@ -12,11 +11,10 @@ use App\Models\User;
 use App\Notifications\Add_invoice_new;
 use App\Notifications\AddInvoice;
 use Illuminate\Http\Request;
-use Illuminate\Notifications\Events\NotificationSent;
-use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 
 class InvoicesController extends Controller
 {
@@ -26,7 +24,8 @@ class InvoicesController extends Controller
     public function index()
     {
         $all_invoices = invoices::all();
-        return view('invoices/invoices',compact('all_invoices'));
+
+        return view('invoices/invoices', compact('all_invoices'));
     }
 
     /**
@@ -35,7 +34,8 @@ class InvoicesController extends Controller
     public function create()
     {
         $sections = sections::all();
-        return view('invoices/add_invoice',compact('sections'));
+
+        return view('invoices/add_invoice', compact('sections'));
     }
 
     /**
@@ -44,11 +44,11 @@ class InvoicesController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'pic' => 'mimes:jpeg,jpg,png,pdf|max:2048' // يسمح برفع صور بصيغة JPEG, JPG, PNG بحجم أقصى 2 ميغابايت
+            'pic' => 'mimes:jpeg,jpg,png,pdf|max:2048', // يسمح برفع صور بصيغة JPEG, JPG, PNG بحجم أقصى 2 ميغابايت
         ], [
             'pic.mimes' => 'صيغة المرفق يجب ان تكون jpeg,jpg,png,pdf',
         ]);
-        
+
         invoices::create([
             'invoice_number' => $request->invoice_number,
             'invoice_Date' => $request->invoice_Date,
@@ -78,32 +78,31 @@ class InvoicesController extends Controller
             'user' => (Auth::user()->name),
         ]);
 
-        if($request->hasFile('pic')) 
-        {
+        if ($request->hasFile('pic')) {
             $invoice_id = invoices::latest()->first()->id; // هنجيب اى دي الفاتورة الحالية من الجدول ال فوق
             $image = $request->file('pic');
             $file_name = $image->getClientOriginalName();
             $invoice_number = $request->invoice_number;
- 
-            $attachments = new invoice_attachments();
+
+            $attachments = new invoice_attachments;
             $attachments->file_name = $file_name;
             $attachments->invoice_number = $invoice_number;
             $attachments->id_Invoice = $invoice_id;
             $attachments->Created_by = Auth::user()->name;
             $attachments->save();
-            
-            // move pic 
+
+            // move pic
             $request->pic->move(public_path('Attachments/'.$invoice_number), $file_name);
         }
 
-        //$user = User::first();
-        //$user->notify(new AddInvoice($invoice_id)); // لارسال اشعار ع الجيميل عند اضافة فاتورة
-        
+        // $user = User::first();
+        // $user->notify(new AddInvoice($invoice_id)); // لارسال اشعار ع الجيميل عند اضافة فاتورة
+
         $users = User::all();
-        foreach($users as $user){
-            $user->notify(new Add_invoice_new($invoice_id)); 
+        foreach ($users as $user) {
+            $user->notify(new Add_invoice_new($invoice_id));
         }
-        
+
         return redirect()->back()->with(['Add' => 'تم اضافه الفاتورة بنجاح وإرسال اشعار للبريد الالكتروني ولكل المستخدمين']);
     }
 
@@ -112,13 +111,15 @@ class InvoicesController extends Controller
      */
     public function show($id)
     {
-        $invoices = invoices::where('id',$id)->first(); 
+        $invoices = invoices::where('id', $id)->first();
+
         return view('invoices.status_update', compact('invoices'));
     }
 
     public function invoice_print($id)
     {
-        $invoice = invoices::where('id',$id)->first(); 
+        $invoice = invoices::where('id', $id)->first();
+
         return view('invoices.invoice_print', compact('invoice'));
     }
 
@@ -127,9 +128,10 @@ class InvoicesController extends Controller
      */
     public function edit($id)
     {
-        $invoices = invoices::where('id',$id)->first();
+        $invoices = invoices::where('id', $id)->first();
         $sections = sections::all();
-        return view('invoices.edit_invoice',compact('invoices','sections'));
+
+        return view('invoices.edit_invoice', compact('invoices', 'sections'));
     }
 
     /**
@@ -152,6 +154,7 @@ class InvoicesController extends Controller
             'Total' => $request->Total,
             'note' => $request->note,
         ]);
+
         return redirect()->back()->with(['edit' => 'تم تعديل الفاتورة بنجاح ']);
     }
 
@@ -161,25 +164,28 @@ class InvoicesController extends Controller
     public function destroy(Request $request)
     {
         $id = $request->invoice_id;
-        $invoices = invoices::withTrashed()->where('id',$id)->first();
-        $details = invoice_attachments::where('id_Invoice',$id)->first(); // هيجيب اول مرفق من مرفقات الفاتورة دى
+        $invoices = invoices::withTrashed()->where('id', $id)->first();
+        $details = invoice_attachments::where('id_Invoice', $id)->first(); // هيجيب اول مرفق من مرفقات الفاتورة دى
         $id_page = $request->id_page;
-        if(!$id_page==2) {
-            if(!empty($details->invoice_number)){
-                Storage::disk('public_uploads')->deleteDirectory($details->invoice_number); // هيحذف الفولدر اللي فيه مرفقات الفاتورة دى كلها    
-            }                             // ولازم الترتيب ده .. احذف مرفقات الفاتورة وبعدين الفاتورة  
+        if (! $id_page == 2) {
+            if (! empty($details->invoice_number)) {
+                Storage::disk('public_uploads')->deleteDirectory($details->invoice_number); // هيحذف الفولدر اللي فيه مرفقات الفاتورة دى كلها
+            }                             // ولازم الترتيب ده .. احذف مرفقات الفاتورة وبعدين الفاتورة
             $invoices->forceDelete();    // هتتحذف من عند اليوزر وكمان من الداتابيز forceDelete()
-                                    // هتتحذف من عند اليوزر لكن هتفضل موجودة فالداتابيز Delete()
-            return redirect('/invoices-archive')->with(['delete_invoice' => 'تم حذف الفاتورة بنجاح ']);    
-        }else {
+
+            // هتتحذف من عند اليوزر لكن هتفضل موجودة فالداتابيز Delete()
+            return redirect('/invoices-archive')->with(['delete_invoice' => 'تم حذف الفاتورة بنجاح ']);
+        } else {
             $invoices->delete();
-            return redirect('/invoices-archive')->with(['archive_invoice' => 'تم ارشفة الفاتورة بنجاح ']);    
+
+            return redirect('/invoices-archive')->with(['archive_invoice' => 'تم ارشفة الفاتورة بنجاح ']);
         }
     }
 
     public function getproducts($id)
     {
-        $products = DB::table("products")->where("section_id", $id)->pluck("Product_name", "id");
+        $products = DB::table('products')->where('section_id', $id)->pluck('Product_name', 'id');
+
         return json_encode($products);
     }
 
@@ -206,7 +212,7 @@ class InvoicesController extends Controller
                 'Payment_Date' => $request->Payment_Date,
                 'user' => (Auth::user()->name),
             ]);
-        }elseif ($request->Status === 'غير مدفوعة') {
+        } elseif ($request->Status === 'غير مدفوعة') {
 
             $invoices->update([
                 'Value_Status' => 2,
@@ -244,23 +250,32 @@ class InvoicesController extends Controller
             ]);
         }
         session()->flash('Status_Update');
+
         return redirect('/invoices');
     }
 
-    public function invoices_paid(){
+    public function invoices_paid()
+    {
         $invoices_paid = invoices::where('Value_Status', '1')->get();
-        return view('invoices/invoices_paid',compact('invoices_paid'));
+
+        return view('invoices/invoices_paid', compact('invoices_paid'));
     }
-    public function invoices_unpaid(){
+
+    public function invoices_unpaid()
+    {
         $invoices_unpaid = invoices::where('Value_Status', '2')->get();
-        return view('invoices/invoices_unpaid',compact('invoices_unpaid'));
+
+        return view('invoices/invoices_unpaid', compact('invoices_unpaid'));
     }
-    public function invoices_partially(){
+
+    public function invoices_partially()
+    {
         $invoices_partially = invoices::where('Value_Status', '3')->get();
-        return view('invoices/invoices_partially',compact('invoices_partially'));
+
+        return view('invoices/invoices_partially', compact('invoices_partially'));
     }
- 
-    public function export() 
+
+    public function export()
     {
         return Excel::download(new InvoicesExport, 'invoices.xlsx');
     }
@@ -269,8 +284,9 @@ class InvoicesController extends Controller
     {
         $unreadnotifications = auth()->user()->unreadNotifications;
 
-        if($unreadnotifications){
+        if ($unreadnotifications) {
             $unreadnotifications->markAsRead();
+
             return back();
         }
     }
