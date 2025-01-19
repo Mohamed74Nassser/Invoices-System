@@ -14,7 +14,8 @@ class InvoicePartiallyController extends Controller
     public function index()
     {
         $all_invoices = invoices::where('status', 'مدفوعة جزئيا')->get();
-        return view('invoices/invoices_partially',compact('all_invoices'));
+
+        return view('invoices/invoices_partially', compact('all_invoices'));
     }
 
     /**

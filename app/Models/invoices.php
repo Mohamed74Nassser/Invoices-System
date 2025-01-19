@@ -12,9 +12,9 @@ class invoices extends Model
     use HasFactory;
     use SoftDeletes;
 
-/*  protected $guarded = []; // بيجبلى كل الداتا م الداتابيز 
-                            // بدل ما استخدم ال fillable
-*/
+    /*  protected $guarded = []; // بيجبلى كل الداتا م الداتابيز
+                                // بدل ما استخدم ال fillable
+    */
 
     protected $fillable = [
         'invoice_number',
@@ -36,8 +36,6 @@ class invoices extends Model
 
     public function section(): BelongsTo
     {
-        return $this->belongsTo(sections::class,'section_id');
+        return $this->belongsTo(sections::class, 'section_id');
     }
-
-
 }

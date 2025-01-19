@@ -26,31 +26,29 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request)
     {
 
-    // قواعد التحقق
-    $request->validate([
-        'email' => 'required|email',
-    ], [
-        // رسائل الخطأ المخصصة
-        'email.required' => 'البريد الإلكتروني مطلوب.',
-        'email.email' => 'يرجى ادخال بيانات صحيحة',
-        'password.required' => 'كلمة المرور مطلوبة.',
-        'password.password' => 'يرجى ادخال بيانات صحيحة',
-    ]);
-
-    // محاولة تسجيل الدخول
-    if (!Auth::attempt($request->only('email', 'password'), $request->filled('remember'))) {
-        return back()->withErrors([
-            'email' => 'يرجى ادخال بيانات صحيحة',
-            'password' => 'يرجى ادخال بيانات صحيحة',
+        // قواعد التحقق
+        $request->validate([
+            'email' => 'required|email',
+        ], [
+            // رسائل الخطأ المخصصة
+            'email.required' => 'البريد الإلكتروني مطلوب.',
+            'email.email' => 'يرجى ادخال بيانات صحيحة',
+            'password.required' => 'كلمة المرور مطلوبة.',
+            'password.password' => 'يرجى ادخال بيانات صحيحة',
         ]);
-    }
 
+        // محاولة تسجيل الدخول
+        if (! Auth::attempt($request->only('email', 'password'), $request->filled('remember'))) {
+            return back()->withErrors([
+                'email' => 'يرجى ادخال بيانات صحيحة',
+                'password' => 'يرجى ادخال بيانات صحيحة',
+            ]);
+        }
 
         $request->authenticate();
 
         $request->session()->regenerate();
 
-        
         return redirect()->intended(RouteServiceProvider::HOME);
 
     }

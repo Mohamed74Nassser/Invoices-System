@@ -30,7 +30,7 @@ class InvoiceAttachmentsController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'file_name' => 'mimes:jpeg,jpg,png,pdf|max:2048' // يسمح برفع صور بصيغة JPEG, JPG, PNG بحجم أقصى 2 ميغابايت
+            'file_name' => 'mimes:jpeg,jpg,png,pdf|max:2048', // يسمح برفع صور بصيغة JPEG, JPG, PNG بحجم أقصى 2 ميغابايت
         ], [
             'file_name.mimes' => 'صيغة المرفق يجب ان تكون jpeg,jpg,png,pdf',
         ]);
@@ -39,13 +39,13 @@ class InvoiceAttachmentsController extends Controller
         $invoice_number = $request->invoice_number;
         $invoice_id = $request->invoice_id;
 
-        $attachments = new invoice_attachments();
+        $attachments = new invoice_attachments;
         $attachments->file_name = $file_name;
         $attachments->invoice_number = $invoice_number;
         $attachments->id_Invoice = $invoice_id;
         $attachments->Created_by = Auth::user()->name;
         $attachments->save();
-        // move file_name 
+        // move file_name
         $request->file_name->move(public_path('Attachments/'.$invoice_number), $file_name);
 
         return redirect()->back()->with(['Add' => 'تم اضافه المرفق بنجاح ']);
